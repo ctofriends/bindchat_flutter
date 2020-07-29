@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cdparty_flutter/screens/tag_screen.dart';
+import 'package:phoenix_wings/phoenix_wings.dart';
+
+final socket = new PhoenixSocket(
+    "ws://10.0.2.2:4000/socket/websocket?token=alan",
+    socketOptions: PhoenixSocketOptions(params: {"token": "alan"}));
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -41,9 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: IconButton(
                     color: Colors.white,
                     icon: Icon(Icons.chat),
-                    onPressed: () => {
+                    onPressed: () async {
+                      await socket.connect();
+                      final chatChannel =
+                          socket.channel("lobby");
+                      chatChannel.join();
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TagScreen()))
+                          MaterialPageRoute(builder: (context) => TagScreen()));
                     },
                   ),
                 )
