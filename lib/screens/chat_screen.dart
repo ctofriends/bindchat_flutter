@@ -31,11 +31,33 @@ class ChatScreen extends StatelessWidget {
                       child: ListView.builder(
                     itemCount: messages.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Text(messages[index].message);
+                      return _buildMessage(messages[index]);
                     },
                   )),
                   TextField(
                       decoration: InputDecoration(hintText: 'Send message')),
                 ]))));
+  }
+
+  _buildMessage(ChatMessage chatMessage) {
+    return Column(
+      children: <Widget>[
+        Align(
+          alignment: chatMessage.type == ChatMessageType.incoming
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                color: chatMessage.type == ChatMessageType.incoming
+                    ? Colors.deepOrange
+                    : Colors.cyan,
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Text(chatMessage.message),
+          ),
+        ),
+      ],
+    );
   }
 }
