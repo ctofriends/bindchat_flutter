@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 
+class ChatMessage {
+  final String message;
+
+  ChatMessage(this.message);
+}
+
 class ChatScreen extends StatelessWidget {
+  final List<ChatMessage> messages = [
+    ChatMessage("hello"),
+    ChatMessage("hello"),
+    ChatMessage("hello"),
+    ChatMessage("hello"),
+    ChatMessage("hello"),
+    ChatMessage("hello")
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,9 +26,9 @@ class ChatScreen extends StatelessWidget {
                 child: Column(children: <Widget>[
                   Expanded(
                       child: ListView.builder(
-                    itemCount: 5,
+                    itemCount: messages.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Text("Hello");
+                      return Text(messages[index].message);
                     },
                   )),
                   TextField(
