@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
+enum ChatMessageType { incoming, outgoing }
+
 class ChatMessage {
   final String message;
+  final ChatMessageType type;
 
-  ChatMessage(this.message);
+  ChatMessage(this.message, this.type);
 }
 
 class ChatScreen extends StatelessWidget {
   final List<ChatMessage> messages = [
-    ChatMessage("hello"),
-    ChatMessage("hello"),
-    ChatMessage("hello"),
-    ChatMessage("hello"),
-    ChatMessage("hello"),
-    ChatMessage("hello")
+    ChatMessage("Hello", ChatMessageType.incoming),
+    ChatMessage("Hi my friend", ChatMessageType.outgoing),
+    ChatMessage("Do you liek tibia?", ChatMessageType.incoming),
+    ChatMessage("like*", ChatMessageType.incoming),
+    ChatMessage("yes I do", ChatMessageType.outgoing),
+    ChatMessage("what a coincidence, me too!!!", ChatMessageType.incoming)
   ];
   @override
   Widget build(BuildContext context) {
