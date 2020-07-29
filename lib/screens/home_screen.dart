@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cdparty_flutter/screens/tag_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -35,11 +36,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintText: '@handle'),
                 ),
                 Container(
-                  decoration: ShapeDecoration(color: Colors.red, shape: CircleBorder()),
+                  decoration:
+                      ShapeDecoration(color: Colors.red, shape: CircleBorder()),
                   child: IconButton(
                     color: Colors.white,
                     icon: Icon(Icons.chat),
-                    onPressed: () => {},
+                    onPressed: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => TagScreen()))
+                    },
                   ),
                 )
               ],
