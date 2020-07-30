@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             },
                           )),
                           _buildSeparator(),
-                          _buildMessageComposer(store)
+                          _buildMessageComposer()
                         ])))));
   }
 
@@ -77,7 +77,8 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  _buildMessageComposer(ChatStore store) {
+  _buildMessageComposer() {
+    final store = Provider.of<ChatStore>(context);
     return Container(
         child: Row(children: [
       Expanded(
