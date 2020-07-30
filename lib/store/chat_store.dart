@@ -10,7 +10,7 @@ abstract class _ChatStore with Store {
 
   @action
   void sendMessage(String text) {
-    final message = ChatMessage(text, ChatMessageType.outgoing);
+    final message = OutgoingMessage(text);
     messages.insert(0, message);
   }
 }

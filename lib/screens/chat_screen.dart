@@ -43,12 +43,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   _buildMessage(ChatMessage chatMessage) {
-    final color = chatMessage.type == ChatMessageType.incoming
-        ? Colors.deepOrange
-        : Colors.cyan;
-    final alignment = chatMessage.type == ChatMessageType.incoming
-        ? Alignment.centerLeft
-        : Alignment.centerRight;
+    final isIncomingMessage = (chatMessage is IncomingMessage);
+    final color = isIncomingMessage ? Colors.deepOrange : Colors.cyan;
+    final alignment =
+        isIncomingMessage ? Alignment.centerLeft : Alignment.centerRight;
     return Column(
       children: <Widget>[
         Align(

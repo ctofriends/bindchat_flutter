@@ -1,8 +1,13 @@
-enum ChatMessageType { incoming, outgoing }
-
-class ChatMessage {
+abstract class ChatMessage {
   final String message;
-  final ChatMessageType type;
 
-  ChatMessage(this.message, this.type);
+  ChatMessage(this.message);
+}
+
+class IncomingMessage extends ChatMessage {
+  IncomingMessage(String message) : super(message);
+}
+
+class OutgoingMessage extends ChatMessage {
+  OutgoingMessage(String message) : super(message);
 }
