@@ -6,7 +6,7 @@ class ChatStore = _ChatStore with _$ChatStore;
 
 abstract class _ChatStore with Store {
   @observable
-  var messages = ObservableList<ChatMessage>();
+  var messages = List<ChatMessage>();
 
   @action
   void sendMessage(String text) {
