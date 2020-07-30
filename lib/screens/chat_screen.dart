@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart';
-
-enum ChatMessageType { incoming, outgoing }
-
-class ChatMessage {
-  final String message;
-  final ChatMessageType type;
-
-  ChatMessage(this.message, this.type);
-}
+import 'package:cdparty_flutter/model/chat_message.dart';
 
 class ChatScreen extends StatelessWidget {
   final List<ChatMessage> messages = [
@@ -82,9 +74,10 @@ class ChatScreen extends StatelessWidget {
         child: Row(children: [
       Expanded(
           child: TextField(
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(5),
-                  hintText: 'Send message'))),
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
+        onChanged: print,
+      )),
       IconButton(icon: Icon(Icons.send), onPressed: () {})
     ]));
   }
