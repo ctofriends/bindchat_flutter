@@ -1,53 +1,53 @@
+import 'package:cdparty_flutter/store/chat_store.dart';
 import 'package:flutter/material.dart';
+import 'package:cdparty_flutter/model/chat_message.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
-enum ChatMessageType { incoming, outgoing }
-
-class ChatMessage {
-  final String message;
-  final ChatMessageType type;
-
-  ChatMessage(this.message, this.type);
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
-class ChatScreen extends StatelessWidget {
-  final List<ChatMessage> messages = [
-    ChatMessage("Hello", ChatMessageType.incoming),
-    ChatMessage("Hi my friend", ChatMessageType.outgoing),
-    ChatMessage("Do you liek tibia?", ChatMessageType.incoming),
-    ChatMessage("like*", ChatMessageType.incoming),
-    ChatMessage("yes I do", ChatMessageType.outgoing),
-    ChatMessage("what a coincidence, me too!!!", ChatMessageType.incoming)
-  ].reversed.toList();
+class _ChatScreenState extends State<ChatScreen> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<ChatStore>(context);
+
     return Scaffold(
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('Tibia')),
         body: SafeArea(
             child: Container(
                 color: Colors.blue,
-                child: Column(children: <Widget>[
-                  Expanded(
-                      child: ListView.builder(
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _buildMessage(messages[index]);
-                    },
-                  )),
-                  _buildSeparator(),
-                  _buildMessageComposer()
-                ]))));
+                child: Observer(
+                    builder: (_) => Column(children: <Widget>[
+                          Expanded(
+                              child: ListView.builder(
+                            reverse: true,
+                            itemCount: store.messages.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildMessage(store.messages[index]);
+                            },
+                          )),
+                          _buildSeparator(),
+                          _buildMessageComposer()
+                        ])))));
   }
 
   _buildMessage(ChatMessage chatMessage) {
-    final color = chatMessage.type == ChatMessageType.incoming
-        ? Colors.deepOrange
-        : Colors.cyan;
-    final alignment = chatMessage.type == ChatMessageType.incoming
-        ? Alignment.centerLeft
-        : Alignment.centerRight;
+    final isIncomingMessage = (chatMessage is IncomingMessage);
+    final color = isIncomingMessage ? Colors.deepOrange : Colors.cyan;
+    final alignment =
+        isIncomingMessage ? Alignment.centerLeft : Alignment.centerRight;
     return Column(
       children: <Widget>[
         Align(
@@ -78,14 +78,22 @@ class ChatScreen extends StatelessWidget {
   }
 
   _buildMessageComposer() {
+    final store = Provider.of<ChatStore>(context);
     return Container(
         child: Row(children: [
       Expanded(
           child: TextField(
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(5),
-                  hintText: 'Send message'))),
-      IconButton(icon: Icon(Icons.send), onPressed: () {})
+        controller: _controller,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
+      )),
+      IconButton(
+        icon: Icon(Icons.send),
+        onPressed: () {
+          store.sendMessage(_controller.text);
+          _controller.clear();
+        },
+      )
     ]));
   }
 }
