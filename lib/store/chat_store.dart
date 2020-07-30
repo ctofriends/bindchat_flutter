@@ -6,11 +6,12 @@ class ChatStore = _ChatStore with _$ChatStore;
 
 abstract class _ChatStore with Store {
   @observable
-  var messages = List<ChatMessage>();
+  var messages = ObservableList<ChatMessage>();
 
   @action
   void sendMessage(String text) {
     final message = OutgoingMessage(text);
+
     messages.insert(0, message);
   }
 }

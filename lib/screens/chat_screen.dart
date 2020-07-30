@@ -2,8 +2,7 @@ import 'package:cdparty_flutter/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:cdparty_flutter/model/chat_message.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-
-final chatStore = ChatStore();
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -21,6 +20,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<ChatStore>(context);
+
     return Scaffold(
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('Tibia')),
@@ -32,13 +33,13 @@ class _ChatScreenState extends State<ChatScreen> {
                           Expanded(
                               child: ListView.builder(
                             reverse: true,
-                            itemCount: chatStore.messages.length,
+                            itemCount: store.messages.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return _buildMessage(chatStore.messages[index]);
+                              return _buildMessage(store.messages[index]);
                             },
                           )),
                           _buildSeparator(),
-                          _buildMessageComposer()
+                          _buildMessageComposer(store)
                         ])))));
   }
 
@@ -76,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  _buildMessageComposer() {
+  _buildMessageComposer(ChatStore store) {
     return Container(
         child: Row(children: [
       Expanded(
@@ -88,7 +89,7 @@ class _ChatScreenState extends State<ChatScreen> {
       IconButton(
         icon: Icon(Icons.send),
         onPressed: () {
-          chatStore.sendMessage(_controller.text);
+          store.sendMessage(_controller.text);
           _controller.clear();
         },
       )
