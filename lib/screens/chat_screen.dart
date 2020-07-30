@@ -2,18 +2,23 @@ import 'package:cdparty_flutter/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:cdparty_flutter/model/chat_message.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 final chatStore = ChatStore();
 
-class ChatScreen extends StatelessWidget {
-  final List<ChatMessage> messages = [
-    ChatMessage("Hello", ChatMessageType.incoming),
-    ChatMessage("Hi my friend", ChatMessageType.outgoing),
-    ChatMessage("Do you liek tibia?", ChatMessageType.incoming),
-    ChatMessage("like*", ChatMessageType.incoming),
-    ChatMessage("yes I do", ChatMessageType.outgoing),
-    ChatMessage("what a coincidence, me too!!!", ChatMessageType.incoming)
-  ].reversed.toList();
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +84,17 @@ class ChatScreen extends StatelessWidget {
         child: Row(children: [
       Expanded(
           child: TextField(
+        controller: _controller,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
-        onChanged: chatStore.inputTextChanged,
       )),
-      IconButton(icon: Icon(Icons.send), onPressed: chatStore.sendMessage)
+      IconButton(
+        icon: Icon(Icons.send),
+        onPressed: () {
+          chatStore.sendMessage(_controller.text);
+          _controller.clear();
+        },
+      )
     ]));
   }
 }
