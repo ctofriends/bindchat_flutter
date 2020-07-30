@@ -2,7 +2,6 @@ import 'package:cdparty_flutter/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:cdparty_flutter/model/chat_message.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 
 final chatStore = ChatStore();
 
