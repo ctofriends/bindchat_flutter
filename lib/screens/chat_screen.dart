@@ -1,5 +1,9 @@
+import 'package:cdparty_flutter/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:cdparty_flutter/model/chat_message.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+
+final chatStore = ChatStore();
 
 class ChatScreen extends StatelessWidget {
   final List<ChatMessage> messages = [
@@ -19,18 +23,19 @@ class ChatScreen extends StatelessWidget {
         body: SafeArea(
             child: Container(
                 color: Colors.blue,
-                child: Column(children: <Widget>[
-                  Expanded(
-                      child: ListView.builder(
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _buildMessage(messages[index]);
-                    },
-                  )),
-                  _buildSeparator(),
-                  _buildMessageComposer()
-                ]))));
+                child: Observer(
+                    builder: (_) => Column(children: <Widget>[
+                          Expanded(
+                              child: ListView.builder(
+                            reverse: true,
+                            itemCount: chatStore.messages.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildMessage(chatStore.messages[index]);
+                            },
+                          )),
+                          _buildSeparator(),
+                          _buildMessageComposer()
+                        ])))));
   }
 
   _buildMessage(ChatMessage chatMessage) {
@@ -76,9 +81,9 @@ class ChatScreen extends StatelessWidget {
           child: TextField(
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
-        onChanged: print,
+        onChanged: chatStore.inputTextChanged,
       )),
-      IconButton(icon: Icon(Icons.send), onPressed: () {})
+      IconButton(icon: Icon(Icons.send), onPressed: chatStore.sendMessage)
     ]));
   }
 }

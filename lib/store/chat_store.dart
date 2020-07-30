@@ -7,10 +7,18 @@ class ChatStore = _ChatStore with _$ChatStore;
 abstract class _ChatStore with Store {
   @observable
   var messages = ObservableList<ChatMessage>();
+  var currentText = Observable("");
 
   @action
-  void sendMessage(String message) {
-    final chatMessage  = ChatMessage(message, ChatMessageType.outgoing)
-    messages.add(chatMessage);
+  void inputTextChanged(String text) {
+    currentText.value = text;
+  }
+
+  @action
+  void sendMessage() {
+    print("I am sending a message I guess ${currentText.value}");
+    final message = ChatMessage(currentText.value, ChatMessageType.outgoing);
+    currentText.value = "";
+    messages.insert(0, message);
   }
 }
