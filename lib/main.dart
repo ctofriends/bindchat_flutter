@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [Provider<ChatStore>(create: (_) => ChatStore())],
         child: MaterialApp(
-          title: 'CdParty',
+          title: 'BindChat',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primaryColor: Colors.red,
