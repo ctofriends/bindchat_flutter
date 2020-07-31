@@ -2,6 +2,7 @@ import 'package:bindchat/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bindchat/screens/home_screen.dart';
+import 'package:bindchat/network/socket_service.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,7 +10,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [Provider<ChatStore>(create: (_) => ChatStore())],
+        providers: [
+          Provider<ChatStore>(create: (_) => ChatStore()),
+          Provider<SocketService>(create: (_) => SocketService())
+        ],
         child: MaterialApp(
           title: 'BindChat',
           debugShowCheckedModeBanner: false,
