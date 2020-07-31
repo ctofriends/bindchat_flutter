@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bindchat/network/socket_service.dart';
-import 'package:provider/provider.dart';
 
 class TagScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final socketService = Provider.of<SocketService>(context);
-
     return Scaffold(
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('BindChat')),
@@ -31,9 +27,7 @@ class TagScreen extends StatelessWidget {
                                 child: Image.asset('assets/images/index.jpg',
                                     height: 90, width: 90))
                           ]),
-                      onPressed: () {
-                        socketService.joinQueue("Tibia");
-                      },
+                      onPressed: () {},
                     ),
                   ],
                 ),

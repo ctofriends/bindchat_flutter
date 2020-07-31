@@ -12,6 +12,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final store = Provider.of<HomeStore>(context);
+    store.onNewRoom = handleNewRoom;
 
     return Scaffold(
       backgroundColor: Colors.yellow,
@@ -55,5 +56,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  handleNewRoom(String room) {
+    print(room);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => TagScreen()));
   }
 }

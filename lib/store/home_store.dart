@@ -10,6 +10,8 @@ abstract class _HomeStore with Store {
   @observable
   String handle;
 
+  Function onNewRoom;
+
   _HomeStore(this._service);
 
   @action
@@ -19,9 +21,7 @@ abstract class _HomeStore with Store {
 
   @action
   connect() async {
-    _service.router.stream.listen((room) {
-      print("I worked: $room");
-    });
+    _service.router.stream.listen(onNewRoom);
     await _service.connect(handle);
   }
 }
