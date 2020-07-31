@@ -1,7 +1,9 @@
 import 'package:phoenix_wings/phoenix_wings.dart';
+import 'package:rxdart/subjects.dart';
 
 class SocketService {
   PhoenixSocket socket;
+  var router = BehaviorSubject<String>();
 
   connect(String handle) async {
     socket = PhoenixSocket("ws://localhost:4000/socket/websocket",
@@ -10,7 +12,9 @@ class SocketService {
     final lobby = socket.channel("lobby");
     lobby.join();
     lobby.on("new_room", (payload, ref, joinRef) {
-      print(payload);
+      if (payload["room"] is String) {
+        router.add(payload["room"] as String);
+      }
     });
   }
 
@@ -19,7 +23,9 @@ class SocketService {
     final queue = socket.channel("queue:$tag");
     queue.join();
     queue.on("new_room", (payload, ref, joinRef) {
-      print(payload);
+      if (payload["room"] is String) {
+        router.add(payload["room"] as String);
+      }
     });
   }
 }

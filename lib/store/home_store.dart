@@ -19,6 +19,9 @@ abstract class _HomeStore with Store {
 
   @action
   connect() async {
+    _service.router.stream.listen((room) {
+      print("I worked: $room");
+    });
     await _service.connect(handle);
   }
 }
