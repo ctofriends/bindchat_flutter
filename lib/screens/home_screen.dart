@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cdparty_flutter/screens/tag_screen.dart';
+import 'package:bindchat/screens/tag_screen.dart';
 import 'package:phoenix_wings/phoenix_wings.dart';
 
 final socket = new PhoenixSocket("ws://10.0.2.2:4000/socket/websocket",
