@@ -1,6 +1,6 @@
+import 'package:bindchat/store/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:bindchat/screens/tag_screen.dart';
-import 'package:bindchat/network/socket_service.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,7 +11,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final socketService = Provider.of<SocketService>(context);
+    final store = Provider.of<HomeStore>(context);
+
     return Scaffold(
       backgroundColor: Colors.yellow,
       body: SafeArea(
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                 TextField(
+                  onChanged: store.handleChanged,
                   decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.red,
@@ -44,11 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: IconButton(
                     color: Colors.white,
                     icon: Icon(Icons.chat),
-                    onPressed: () async {
-                      socketService.connect("alanz");
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TagScreen()));
-                    },
+                    onPressed: store.connect,
                   ),
                 )
               ],
