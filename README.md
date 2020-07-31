@@ -1,5 +1,7 @@
 # BindChat
 
+![Flutter CI](https://github.com/ctofriends/bindchat_flutter/workflows/Flutter%20CI/badge.svg)
+
 A new Flutter project.
 
 ## Getting Started
