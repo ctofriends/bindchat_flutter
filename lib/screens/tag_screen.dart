@@ -5,7 +5,7 @@ class TagScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.yellow,
-        appBar: AppBar(title: Text('CdParty')),
+        appBar: AppBar(title: Text('BindChat')),
         body: Container(
             color: Colors.blue,
             padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
@@ -20,8 +20,12 @@ class TagScreen extends StatelessWidget {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text('Wow', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                               ClipOval(child: Image.asset('assets/images/index.jpg', height: 90, width: 90))
+                            Text('Wow',
+                                style: TextStyle(
+                                    fontSize: 30, fontWeight: FontWeight.bold)),
+                            ClipOval(
+                                child: Image.asset('assets/images/index.jpg',
+                                    height: 90, width: 90))
                           ]),
                       onPressed: () => {},
                     ),

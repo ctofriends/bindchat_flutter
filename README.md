@@ -1,4 +1,4 @@
-# cdparty_flutter
+# BindChat
 
 A new Flutter project.
 
