@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bindchat/screens/tag_screen.dart';
 import 'package:phoenix_wings/phoenix_wings.dart';
 
-final socket = new PhoenixSocket("ws://10.0.2.2:4000/socket/websocket",
+final socket = new PhoenixSocket("ws://localhost:4000/socket/websocket",
     socketOptions: PhoenixSocketOptions(params: {"token": "alan"}));
 
 class HomeScreen extends StatefulWidget {
