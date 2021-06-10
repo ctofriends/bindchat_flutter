@@ -16,7 +16,7 @@ class TagScreen extends StatelessWidget {
                 child: GridView.count(
                   crossAxisCount: 2,
                   children: <Widget>[
-                    FlatButton(
+                    TextButton(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
