@@ -1,7 +1,5 @@
-import 'package:bindchat/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:bindchat/model/chat_message.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -20,7 +18,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final store = Provider.of<ChatStore>(context);
 
     return Scaffold(
         backgroundColor: Colors.yellow,
@@ -33,9 +30,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           Expanded(
                               child: ListView.builder(
                             reverse: true,
-                            itemCount: store.messages.length,
+                            itemCount: 1,
                             itemBuilder: (BuildContext context, int index) {
-                              return _buildMessage(store.messages[index]);
+                              return _buildMessage();
                             },
                           )),
                           _buildSeparator(),
@@ -78,7 +75,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   _buildMessageComposer() {
-    final store = Provider.of<ChatStore>(context);
     return Container(
         child: Row(children: [
       Expanded(
@@ -90,7 +86,6 @@ class _ChatScreenState extends State<ChatScreen> {
       IconButton(
         icon: Icon(Icons.send),
         onPressed: () {
-          store.sendMessage(_controller.text);
           _controller.clear();
         },
       )
