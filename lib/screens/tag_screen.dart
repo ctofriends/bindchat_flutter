@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TagScreen extends StatelessWidget {
   @override
@@ -16,19 +17,21 @@ class TagScreen extends StatelessWidget {
                 child: GridView.count(
                   crossAxisCount: 2,
                   children: <Widget>[
-                    TextButton(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Wow',
-                                style: TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold)),
-                            ClipOval(
-                                child: Image.asset('assets/images/index.jpg',
-                                    height: 90, width: 90))
-                          ]),
-                      onPressed: () => {},
-                    ),
+                    ConstrainedBox(
+                      constraints:
+                          BoxConstraints.tightFor(width: 200, height: 200),
+                      child: ElevatedButton(
+                        child: Text(
+                          'Button',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        onPressed: () {
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               )

@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:bindchat/screens/tag_screen.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+
+import '../model/app_state.dart';
+import '../model/actions.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return Scaffold(
       backgroundColor: Colors.yellow,
       body: SafeArea(
         child: Center(
@@ -35,23 +41,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintStyle: TextStyle(color: Colors.white),
                       hintText: '@handle'),
                 ),
-                Container(
-                  decoration:
-                      ShapeDecoration(color: Colors.red, shape: CircleBorder()),
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: Icon(Icons.chat),
-                    onPressed: () async {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TagScreen()));
-                    },
-                  ),
-                )
-              ],
+                StoreConnector<AppState, VoidCallback>(
+                  converter: (store) {
+                    return () => store.dispatch(connect);
+                  },
+                  builder: (context, callback) {
+                    return Container(
+                      decoration: ShapeDecoration(color: Colors.red, shape: CircleBorder()),
+                      child: IconButton(
+                        color: Colors.white,
+                        icon: Icon(Icons.chat),
+                        onPressed: callback,
+                    ));
+                    }
+                ),
+              ]
+              )
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
+
