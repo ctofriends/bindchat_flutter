@@ -1,15 +1,18 @@
 import 'package:phoenix_wings/phoenix_wings.dart';
+import 'package:optional/optional.dart';
 
-enum ConnectionState {off, on, error}
+enum Connection {off, connecting, on, error}
 
 class AppState {
-  final ConnectionState connectionState;
+  final Connection connection;
+  final Optional<dynamic> room;
 
-  const AppState({this.connectionState = ConnectionState.off});
+  const AppState({this.connection = Connection.off, this.room = empty});
 
-  AppState copyWith({connectionState}) {
+  AppState copyWith({connection, room}) {
     return new AppState(
-      connectionState: connectionState ?? this.connectionState,
+      connection: connection ?? this.connection,
+      room: room ?? this.room,
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:bindchat/screens/tag_screen.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -50,7 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: ShapeDecoration(color: Colors.red, shape: CircleBorder()),
                       child: IconButton(
                         color: Colors.white,
-                        icon: Icon(Icons.chat),
+                        icon: StoreConnector<AppState, bool>(
+                          converter: (store) {
+                              return store.state.connection == Connection.connecting;
+                          },
+                          builder: (context, isConnecting) {
+                            return Icon(isConnecting ? Icons.refresh : Icons.chat);  
+                          }
+                        ),
                         onPressed: callback,
                     ));
                     }
