@@ -8,6 +8,7 @@ final reducer = combineReducers<AppState>([
     TypedReducer<AppState, ConnectionOpen>(_onSocketConnection),
     TypedReducer<AppState, ConnectionOpening>(_onSocketConnectionOpening),
     TypedReducer<AppState, NewRoom>(_onNewRoom),
+    TypedReducer<AppState, NewMessage>(_onNewMessage),
 ]);
 
 AppState _onSocketConnection(AppState state, ConnectionOpen action) {
@@ -19,5 +20,9 @@ AppState _onSocketConnectionOpening(AppState state, ConnectionOpening action) {
 }
 
 AppState _onNewRoom(AppState state, NewRoom action) {
-  return state.copyWith(inChannel: action.roomName);
+  return state.copyWith(room: action.roomName);
+}
+
+AppState _onNewMessage(AppState state, NewMessage action) {
+  return state.copyWith(messages: state.messages.add(action.message));
 }
