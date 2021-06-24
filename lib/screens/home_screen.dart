@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bindchat/screens/tag_screen.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 

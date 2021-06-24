@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bindchat/model/chat_message.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -25,23 +24,22 @@ class _ChatScreenState extends State<ChatScreen> {
         body: SafeArea(
             child: Container(
                 color: Colors.blue,
-                child: Observer(
-                    builder: (_) => Column(children: <Widget>[
+                child: Column(children: <Widget>[
                           Expanded(
                               child: ListView.builder(
                             reverse: true,
                             itemCount: 1,
                             itemBuilder: (BuildContext context, int index) {
-                              return _buildMessage();
+                              return _buildMessage("hello");
                             },
                           )),
                           _buildSeparator(),
                           _buildMessageComposer()
-                        ])))));
+                ]))));
   }
 
-  _buildMessage(ChatMessage chatMessage) {
-    final isIncomingMessage = (chatMessage is IncomingMessage);
+  _buildMessage(String chatMessage) {
+    final isIncomingMessage = true;
     final color = isIncomingMessage ? Colors.deepOrange : Colors.cyan;
     final alignment =
         isIncomingMessage ? Alignment.centerLeft : Alignment.centerRight;
@@ -55,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
             decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Text(chatMessage.message),
+            child: Text(chatMessage),
           ),
         ),
       ],

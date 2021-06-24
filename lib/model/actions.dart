@@ -13,9 +13,13 @@ class ConnectionOpen {}
 class ConnectionOpening {}
 class ConnectionError {}
 class NewRoom {
-  final String roomName;
+  final String _roomName;
 
-  NewRoom(this.roomName);
+  get roomName { return this._roomName; }
+
+  get inGroup { return this._roomName.startsWith("group"); }
+
+  NewRoom(this._roomName);
 }
 class NewMessage{
   final String message;
@@ -41,31 +45,31 @@ void connectionOpen(Store<AppState> store) async {
 void joinLobby(Store<AppState> store) async {
   channel = socket.channel("lobby");
   channel.on("new_room", (Map payload, String _ref, String _joinRef) {
-      store.dispatch(switchRoom(payload.toString()));
+      store.dispatch(switchRoom(payload["room"]));
   });
   channel.join();
 }
 
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
-    if (store.state.room != roomName) {
+    if (roomName != "lobby") {
+      final push = PhoenixPush(channel, "leave", {}, 100);
+      push.send();
       channel.leave();
       channel = socket.channel(roomName);
 
-      if (roomName == "lobby") {
+      if (roomName.startsWith("queue:")) {
         channel.on("new_room", (Map payload, String _ref, String _joinRef) {
-            store.dispatch(switchRoom(payload.toString()));
+            store.dispatch(switchRoom(payload["room"]));
         });
-      } else if (roomName.startsWith("queue:")) {
-        
       }
       else if (roomName.startsWith("group:")) {
         channel.on("new_message", (Map payload, String _ref, String _joinRef) {
-            store.dispatch(switchRoom(payload.toString()));
         });
       }
 
       channel.join();
+      store.dispatch(NewRoom(roomName));
     }
   };
 }

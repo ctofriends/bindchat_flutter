@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   english_words: ^4.0.0
-  phoenix_wings: ^1.0.0
+  phoenix_wings: ^1.0.2
   redux: ^5.0.0
   flutter_redux: ^0.8.2
   redux_thunk: ^0.4.0

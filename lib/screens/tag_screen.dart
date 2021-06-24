@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+
+import '../model/app_state.dart';
+import '../model/actions.dart';
 
 class TagScreen extends StatelessWidget {
   @override
@@ -20,21 +23,30 @@ class TagScreen extends StatelessWidget {
                     ConstrainedBox(
                       constraints:
                           BoxConstraints.tightFor(width: 200, height: 200),
-                      child: ElevatedButton(
-                        child: Text(
-                          'Button',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        onPressed: () {
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ])));
-  }
-}
+                          child: StoreConnector<AppState, VoidCallback>(
+                            converter: (store) {
+                              return () => store.dispatch(switchRoom("queue:games"));
+                            },
+                            builder: (context, callback) {
+                              return ElevatedButton(
+                                child: Text(
+                                  'Button',
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                                onPressed: callback,
+                                style: ElevatedButton.styleFrom(
+                                  shape: CircleBorder(),
+                                ),
+                            );
+                          }
+                        )
+                      )
+                    ]
+                  )
+                )
+              ]
+            )
+          )
+        );
+      }
+    }

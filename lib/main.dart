@@ -1,5 +1,6 @@
 import 'package:bindchat/screens/home_screen.dart';
 import 'package:bindchat/screens/tag_screen.dart';
+import 'package:bindchat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -18,7 +19,9 @@ class MyMiddleware extends MiddlewareClass<AppState> {
   
   @override
   void call(Store<AppState> store, dynamic action, NextDispatcher next) {
-    if (action is ConnectionOpen) {
+    if (action is NewRoom && action.inGroup) {
+      navigatorKey.currentState.pushNamed('/chat');
+    } else {
       navigatorKey.currentState.pushNamed('/tags');
     }
   }
@@ -47,6 +50,11 @@ class MyApp extends StatelessWidget {
               case '/tags':
                 return MaterialPageRoute(
                   builder: (context) => TagScreen(),
+                );
+                break;
+                case '/chat':
+                return MaterialPageRoute(
+                  builder: (context) => ChatScreen(),
                 );
                 break;
               default:
