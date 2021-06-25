@@ -20,7 +20,7 @@ class MyMiddleware extends MiddlewareClass<AppState> {
   @override
   void call(Store<AppState> store, dynamic action, NextDispatcher next) {
     if (action is NewRoom && action.inGroup) {
-      navigatorKey.currentState.pushNamed('/chat');
+      navigatorKey.currentState.pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/') );
     } else {
       navigatorKey.currentState.pushNamed('/tags');
     }
@@ -48,14 +48,10 @@ class MyApp extends StatelessWidget {
             final arguments = settings.arguments;
             switch (settings.name) {
               case '/tags':
-                return MaterialPageRoute(
-                  builder: (context) => TagScreen(),
-                );
+                return MaterialPageRoute(builder: (context) => TagScreen());
                 break;
                 case '/chat':
-                return MaterialPageRoute(
-                  builder: (context) => ChatScreen(),
-                );
+                return MaterialPageRoute(builder: (context) => ChatScreen());
                 break;
               default:
                 break;
