@@ -17,36 +17,26 @@ class TagScreen extends StatelessWidget {
               TextField(
                   decoration: InputDecoration(hintText: 'What do you like?')),
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  children: <Widget>[
-                    ConstrainedBox(
-                      constraints:
-                          BoxConstraints.tightFor(width: 200, height: 200),
-                          child: StoreConnector<AppState, VoidCallback>(
-                            converter: (store) {
-                              return () => store.dispatch(switchRoom("queue:games"));
-                            },
-                            builder: (context, callback) {
-                              return ElevatedButton(
-                                child: Text(
-                                  'Button',
-                                  style: TextStyle(fontSize: 24),
-                                ),
-                                onPressed: callback,
-                                style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
-                                ),
-                            );
-                          }
-                        )
-                      )
-                    ]
-                  )
-                )
-              ]
-            )
-          )
-        );
-      }
-    }
+                  child: GridView.count(crossAxisCount: 2, children: <Widget>[
+                ConstrainedBox(
+                    constraints:
+                        BoxConstraints.tightFor(width: 200, height: 200),
+                    child: StoreConnector<AppState, VoidCallback>(
+                        converter: (store) {
+                      return () => store.dispatch(switchRoom("queue:games"));
+                    }, builder: (context, callback) {
+                      return ElevatedButton(
+                        child: Text(
+                          'Button',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        onPressed: callback,
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                        ),
+                      );
+                    }))
+              ]))
+            ])));
+  }
+}

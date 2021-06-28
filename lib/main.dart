@@ -16,18 +16,21 @@ class MyMiddleware extends MiddlewareClass<AppState> {
   final GlobalKey<NavigatorState> navigatorKey;
 
   MyMiddleware(this.navigatorKey);
-  
+
   @override
   void call(Store<AppState> store, dynamic action, NextDispatcher next) {
     if (action is NewRoom && action.inGroup) {
-      navigatorKey.currentState.pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/') );
+      navigatorKey.currentState
+          .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
     } else {
       navigatorKey.currentState.pushNamed('/tags');
     }
   }
 }
 
-final store = Store<AppState>(reducer, middleware: [thunkMiddleware, MyMiddleware(navigatorKey)], initialState: new AppState());
+final store = Store<AppState>(reducer,
+    middleware: [thunkMiddleware, MyMiddleware(navigatorKey)],
+    initialState: new AppState());
 
 void main() => runApp(MyApp());
 
@@ -50,7 +53,7 @@ class MyApp extends StatelessWidget {
               case '/tags':
                 return MaterialPageRoute(builder: (context) => TagScreen());
                 break;
-                case '/chat':
+              case '/chat':
                 return MaterialPageRoute(builder: (context) => ChatScreen());
                 break;
               default:

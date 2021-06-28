@@ -5,10 +5,10 @@ import 'app_state.dart';
 import 'actions.dart';
 
 final reducer = combineReducers<AppState>([
-    TypedReducer<AppState, ConnectionOpen>(_onSocketConnection),
-    TypedReducer<AppState, ConnectionOpening>(_onSocketConnectionOpening),
-    TypedReducer<AppState, NewRoom>(_onNewRoom),
-    TypedReducer<AppState, NewMessage>(_onNewMessage),
+  TypedReducer<AppState, ConnectionOpen>(_onSocketConnection),
+  TypedReducer<AppState, ConnectionOpening>(_onSocketConnectionOpening),
+  TypedReducer<AppState, NewRoom>(_onNewRoom),
+  TypedReducer<AppState, NewMessage>(_onNewMessage),
 ]);
 
 AppState _onSocketConnection(AppState state, ConnectionOpen action) {

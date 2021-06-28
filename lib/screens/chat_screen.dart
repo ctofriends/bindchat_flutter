@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-class ChatScreen extends StatefulWidget {
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
+import '../model/app_state.dart';
+import '../model/actions.dart';
+import '../model/message.dart';
 
-class _ChatScreenState extends State<ChatScreen> {
-  final _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('Tibia')),
@@ -25,21 +16,21 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
                 color: Colors.blue,
                 child: Column(children: <Widget>[
-                          Expanded(
-                              child: ListView.builder(
-                            reverse: true,
-                            itemCount: 1,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildMessage("hello");
-                            },
-                          )),
-                          _buildSeparator(),
-                          _buildMessageComposer()
+                  Expanded(
+                      child: ListView.builder(
+                    reverse: true,
+                    itemCount: 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildMessage(Message("helo", "world"));
+                    },
+                  )),
+                  _buildSeparator(),
+                  _buildMessageComposer()
                 ]))));
   }
 
-  _buildMessage(String chatMessage) {
-    final isIncomingMessage = true;
+  _buildMessage(Message chatMessage) {
+    final isIncomingMessage = chatMessage.sender == "alan";
     final color = isIncomingMessage ? Colors.deepOrange : Colors.cyan;
     final alignment =
         isIncomingMessage ? Alignment.centerLeft : Alignment.centerRight;
@@ -53,7 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
             decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Text(chatMessage),
+            child: Text(chatMessage.value),
           ),
         ),
       ],
@@ -73,20 +64,21 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   _buildMessageComposer() {
-    return Container(
-        child: Row(children: [
-      Expanded(
-          child: TextField(
-        controller: _controller,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
-      )),
-      IconButton(
-        icon: Icon(Icons.send),
-        onPressed: () {
-          _controller.clear();
-        },
-      )
-    ]));
+    return StoreConnector<AppState, VoidCallback>(converter: (store) {
+      return () => print("hi"); //store.dispatch(pushMessage);
+    }, builder: (context, pushMessage) {
+      return Container(
+          child: Row(children: [
+        Expanded(
+            child: TextField(
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
+        )),
+        IconButton(
+          icon: Icon(Icons.send),
+          onPressed: () {},
+        )
+      ]));
+    });
   }
 }
