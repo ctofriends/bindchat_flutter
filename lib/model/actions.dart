@@ -74,7 +74,8 @@ ThunkAction<AppState> switchRoom(String roomName) {
         });
       } else if (roomName.startsWith("group:")) {
         channel.on("new_msg", (Map payload, String _ref, String _joinRef) {
-          store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
+          store.dispatch(
+              NewMessage(Message(payload["body"], payload["sender"])));
         });
       }
 

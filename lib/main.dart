@@ -22,20 +22,19 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
     if (action is NewRoom && action.inGroup) {
       navigatorKey.currentState
           .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
-    } else if (action is NewRoom){
+    } else if (action is NewRoom) {
       navigatorKey.currentState.pushNamed('/tags');
     }
     next(action);
   }
 }
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   final store = Store<AppState>(reducer,
-    middleware: [thunkMiddleware, NavigationMiddleware(navigatorKey)],
-    initialState: new AppState());
+      middleware: [thunkMiddleware, NavigationMiddleware(navigatorKey)],
+      initialState: new AppState());
 
   @override
   Widget build(BuildContext context) {
