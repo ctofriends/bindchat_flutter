@@ -12,29 +12,31 @@ import 'model/actions.dart';
 
 final navigatorKey = new GlobalKey<NavigatorState>();
 
-class MyMiddleware extends MiddlewareClass<AppState> {
+class NavigationMiddleware extends MiddlewareClass<AppState> {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  MyMiddleware(this.navigatorKey);
+  NavigationMiddleware(this.navigatorKey);
 
   @override
   void call(Store<AppState> store, dynamic action, NextDispatcher next) {
     if (action is NewRoom && action.inGroup) {
       navigatorKey.currentState
           .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
-    } else {
+    } else if (action is NewRoom){
       navigatorKey.currentState.pushNamed('/tags');
     }
+    next(action);
   }
 }
 
-final store = Store<AppState>(reducer,
-    middleware: [thunkMiddleware, MyMiddleware(navigatorKey)],
-    initialState: new AppState());
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final store = Store<AppState>(reducer,
+    middleware: [thunkMiddleware, NavigationMiddleware(navigatorKey)],
+    initialState: new AppState());
+
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(

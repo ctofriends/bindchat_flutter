@@ -15,18 +15,23 @@ class ChatScreen extends StatelessWidget {
         body: SafeArea(
             child: Container(
                 color: Colors.blue,
-                child: Column(children: <Widget>[
-                  Expanded(
-                      child: ListView.builder(
-                    reverse: true,
-                    itemCount: 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _buildMessage(Message("helo", "world"));
-                    },
-                  )),
-                  _buildSeparator(),
-                  _buildMessageComposer()
-                ]))));
+                child: StoreConnector<AppState, IList<Message>>(
+                    converter: (store) {
+                  return store.state.messages;
+                }, builder: (context, messages) {
+                  return Column(children: <Widget>[
+                    Expanded(
+                        child: ListView.builder(
+                      reverse: true,
+                      itemCount: messages.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildMessage(messages[index]);
+                      },
+                    )),
+                    _buildSeparator(),
+                    _buildMessageComposer()
+                  ]);
+                }))));
   }
 
   _buildMessage(Message chatMessage) {

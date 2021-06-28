@@ -46,7 +46,6 @@ void connect(Store<AppState> store) async {
 
     await socket.connect();
   } else {
-    print(store.state.room.value);
     store.dispatch(NewRoom(store.state.room.value));
   }
 }
@@ -67,9 +66,6 @@ void joinLobby(Store<AppState> store) async {
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
     if (roomName != "lobby") {
-      // final push = PhoenixPush(channel, "leave", {}, 100);
-      // push.send();
-      // channel.leave();
       channel = socket.channel(roomName);
 
       if (roomName.startsWith("queue:")) {
@@ -78,7 +74,7 @@ ThunkAction<AppState> switchRoom(String roomName) {
         });
       } else if (roomName.startsWith("group:")) {
         channel.on("new_msg", (Map payload, String _ref, String _joinRef) {
-          (NewMessage(Message(payload["body"], payload["sender"])));
+          store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
         });
       }
 

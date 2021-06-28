@@ -1,5 +1,5 @@
 import 'package:redux/redux.dart';
-import 'package:redux_thunk/redux_thunk.dart';
+import 'package:optional/optional.dart';
 
 import 'app_state.dart';
 import 'actions.dart';
@@ -20,7 +20,7 @@ AppState _onSocketConnectionOpening(AppState state, ConnectionOpening action) {
 }
 
 AppState _onNewRoom(AppState state, NewRoom action) {
-  return state.copyWith(room: action.roomName);
+  return state.copyWith(room: Optional.of(action.roomName));
 }
 
 AppState _onNewMessage(AppState state, NewMessage action) {
