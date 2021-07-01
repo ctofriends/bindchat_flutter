@@ -45,13 +45,15 @@ void connect(Store<AppState> store) async {
     socket.onError((_) => store.dispatch(ConnectionError()));
 
     await socket.connect();
-  } else {
+  } else if (store.state.room.isPresent) {
+    print(store.state.room);
     store.dispatch(NewRoom(store.state.room.value));
   }
 }
 
 void connectionOpen(Store<AppState> store) async {
   store.dispatch(ConnectionOpen());
+  store.dispatch(NewRoom("lobby"));
   store.dispatch(joinLobby);
 }
 
@@ -71,7 +73,7 @@ ThunkAction<AppState> pushMessage(String message) {
 
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
-    if (roomName != "lobby") {
+    if (roomName != "lobby" && store.state.room.map((v) => v != roomName).orElse(true)) {
       channel = socket.channel(roomName);
 
       if (roomName.startsWith("queue:")) {

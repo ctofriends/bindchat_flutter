@@ -22,7 +22,7 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
     if (action is NewRoom && action.inGroup) {
       navigatorKey.currentState
           .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
-    } else if (action is NewRoom) {
+        } else if (action is NewRoom) {
       navigatorKey.currentState.pushNamed('/tags');
     }
     next(action);
@@ -48,22 +48,11 @@ class MyApp extends StatelessWidget {
             accentColor: Colors.orange,
           ),
           navigatorKey: navigatorKey,
-          onGenerateRoute: (settings) {
-            final arguments = settings.arguments;
-            switch (settings.name) {
-              case '/tags':
-                return MaterialPageRoute(builder: (context) => TagScreen());
-                break;
-              case '/chat':
-                return MaterialPageRoute(builder: (context) => ChatScreen());
-                break;
-              default:
-                break;
-            }
-          },
           initialRoute: '/',
           routes: {
             '/': (context) => HomeScreen(),
+            '/tags': (context) => TagScreen(),
+            '/chat': (context) => ChatScreen(),
           },
         ));
   }
