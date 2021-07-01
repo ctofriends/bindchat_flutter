@@ -24,5 +24,6 @@ AppState _onNewRoom(AppState state, NewRoom action) {
 }
 
 AppState _onNewMessage(AppState state, NewMessage action) {
-  return state.copyWith(messages: state.messages.add(action.message));
+  return state.copyWith(messages: state.messages.insert(0, action.message));
 }
+

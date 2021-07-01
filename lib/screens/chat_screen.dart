@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:redux/redux.dart';
 
 import '../model/app_state.dart';
 import '../model/actions.dart';
 import '../model/message.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreen createState() => _ChatScreen();
+}
+
+class _ChatScreen extends State<ChatScreen> {
+  final composerController = TextEditingController();
+
+  @override
+  void dispose() {
+    composerController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,20 +83,27 @@ class ChatScreen extends StatelessWidget {
   }
 
   _buildMessageComposer() {
-    return StoreConnector<AppState, VoidCallback>(converter: (store) {
-      return () => print("hi"); //store.dispatch(pushMessage);
-    }, builder: (context, pushMessage) {
+    return StoreConnector<AppState, Store<AppState>>(converter: (store) {
+      return store;
+    }, builder: (context, store) {
       return Container(
           child: Row(children: [
         Expanded(
-            child: TextField(
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(5), hintText: 'Send message'),
-        )),
+            child: TextFormField(
+                controller: composerController,
+                onFieldSubmitted: (value) {
+                  store.dispatch(pushMessage(value));
+                  composerController.text = '';
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5),
+                    hintText: 'Send message'))),
         IconButton(
-          icon: Icon(Icons.send),
-          onPressed: () {},
-        )
+            icon: Icon(Icons.send),
+            onPressed: () {
+              store.dispatch(pushMessage(composerController.text));
+              composerController.text = '';
+            })
       ]));
     });
   }

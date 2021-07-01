@@ -63,6 +63,12 @@ void joinLobby(Store<AppState> store) async {
   channel.join();
 }
 
+ThunkAction<AppState> pushMessage(String message) {
+  return (Store<AppState> store) async {
+    channel.push(event: "new_msg", payload: {"body": message});
+  };
+}
+
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
     if (roomName != "lobby") {
@@ -83,9 +89,4 @@ ThunkAction<AppState> switchRoom(String roomName) {
       store.dispatch(NewRoom(roomName));
     }
   };
-}
-
-void pushMessage(Store<AppState> store) async {
-  final push = PhoenixPush(channel, store.state.input, {}, 100);
-  push.send;
 }
