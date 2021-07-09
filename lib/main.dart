@@ -22,7 +22,7 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
     if (action is NewRoom && action.inGroup) {
       navigatorKey.currentState
           .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
-        } else if (action is NewRoom) {
+    } else if (action is NewRoom) {
       navigatorKey.currentState.pushNamed('/tags');
     }
     next(action);

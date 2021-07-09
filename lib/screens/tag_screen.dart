@@ -11,7 +11,9 @@ class TagScreen extends StatelessWidget {
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('BindChat')),
         body: StoreConnector<AppState, bool>(converter: (store) {
-            return store.state.room.map((v) => v.startsWith("queue")).orElse(false);
+          return store.state.room
+              .map((v) => v.startsWith("queue"))
+              .orElse(false);
         }, builder: (context, inQueue) {
           return Container(
               color: inQueue ? Colors.red : Colors.blue,

@@ -53,12 +53,12 @@ void connect(Store<AppState> store) async {
 
 void connectionOpen(Store<AppState> store) async {
   store.dispatch(ConnectionOpen());
-  store.dispatch(NewRoom("lobby"));
+  store.dispatch(NewRoom("lobby:" + store.state.user));
   store.dispatch(joinLobby);
 }
 
 void joinLobby(Store<AppState> store) async {
-  channel = socket.channel("lobby");
+  channel = socket.channel("lobby:" + store.state.user);
   channel.on("new_room", (Map payload, String _ref, String _joinRef) {
     store.dispatch(switchRoom(payload["room"]));
   });
@@ -73,7 +73,8 @@ ThunkAction<AppState> pushMessage(String message) {
 
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
-    if (roomName != "lobby" && store.state.room.map((v) => v != roomName).orElse(true)) {
+    if (roomName.startsWith("lobby") &&
+        store.state.room.map((v) => v != roomName).orElse(true)) {
       channel = socket.channel(roomName);
 
       if (roomName.startsWith("queue:")) {
