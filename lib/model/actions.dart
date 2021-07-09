@@ -67,13 +67,13 @@ void joinLobby(Store<AppState> store) async {
 
 ThunkAction<AppState> pushMessage(String message) {
   return (Store<AppState> store) async {
-    channel.push(event: "new_msg", payload: {"body": message});
+    channel.push(event: "post_msg", payload: {"body": message});
   };
 }
 
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
-    if (roomName.startsWith("lobby") &&
+    if (!roomName.startsWith("lobby") &&
         store.state.room.map((v) => v != roomName).orElse(true)) {
       channel = socket.channel(roomName);
 
@@ -85,6 +85,10 @@ ThunkAction<AppState> switchRoom(String roomName) {
         channel.on("new_msg", (Map payload, String _ref, String _joinRef) {
           store.dispatch(
               NewMessage(Message(payload["body"], payload["sender"])));
+        });
+        channel.on("group_disbanded", (Map payload, String _ref, String _joinRef) {
+            print("disbanded");
+          store.dispatch(switchRoom("lobby:"+ store.state.user));
         });
       }
 

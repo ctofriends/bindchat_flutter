@@ -63,7 +63,7 @@ class _ChatScreen extends State<ChatScreen> {
             decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Text(chatMessage.value),
+            child: Text(chatMessage.sender + ":" + chatMessage.value),
           ),
         ),
       ],
