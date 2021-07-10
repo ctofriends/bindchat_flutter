@@ -20,7 +20,7 @@ AppState _onSocketConnectionOpening(AppState state, ConnectionOpening action) {
 }
 
 AppState _onNewRoom(AppState state, NewRoom action) {
-  return state.copyWith(room: Optional.of(action.roomName));
+  return state.copyWith(room: action.room);
 }
 
 AppState _onNewMessage(AppState state, NewMessage action) {

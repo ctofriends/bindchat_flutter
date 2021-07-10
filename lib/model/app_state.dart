@@ -5,17 +5,18 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'message.dart';
 
 enum Connection { off, connecting, on, error }
+enum Room { lobby, queue, group }
 
 class AppState {
   final Connection connection;
-  final Optional<dynamic> room;
+  final Room room;
   final IList<Message> messages;
   final String input;
   final String user;
 
   const AppState({
     this.connection = Connection.off,
-    this.room = empty,
+    this.room = null,
     this.messages = const IListConst<Message>([]),
     this.input = "",
     this.user = "alan",

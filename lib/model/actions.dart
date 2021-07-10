@@ -10,7 +10,8 @@ final PhoenixSocket socket = new PhoenixSocket(
     "ws://localhost:4000/socket/websocket",
     socketOptions: PhoenixSocketOptions(params: {"token": "alan"}));
 
-PhoenixChannel channel;
+PhoenixChannel lobby;
+Map<String, PhoenixChannel> channels = {};
 
 class ConnectionOpen {}
 
@@ -19,17 +20,9 @@ class ConnectionOpening {}
 class ConnectionError {}
 
 class NewRoom {
-  final String _roomName;
+  final Room room;
 
-  get roomName {
-    return this._roomName;
-  }
-
-  get inGroup {
-    return this._roomName.startsWith("group");
-  }
-
-  NewRoom(this._roomName);
+  NewRoom(this.room);
 }
 
 class NewMessage {
@@ -45,55 +38,72 @@ void connect(Store<AppState> store) async {
     socket.onError((_) => store.dispatch(ConnectionError()));
 
     await socket.connect();
-  } else if (store.state.room.isPresent) {
-    print(store.state.room);
-    store.dispatch(NewRoom(store.state.room.value));
+  } else if (lobby == null) {
+    store.dispatch(NewRoom(Room.lobby));
   }
 }
 
 void connectionOpen(Store<AppState> store) async {
   store.dispatch(ConnectionOpen());
-  store.dispatch(NewRoom("lobby:" + store.state.user));
   store.dispatch(joinLobby);
 }
 
 void joinLobby(Store<AppState> store) async {
-  channel = socket.channel("lobby:" + store.state.user);
-  channel.on("new_room", (Map payload, String _ref, String _joinRef) {
+  lobby = socket.channel("lobby:" + store.state.user);
+
+  lobby.on("new_room", (Map payload, String _ref, String _joinRef) {
+    if (payload["room"].startsWith("lobby")) {
+      return;
+    }
+    channels.forEach((k, v) => {
+          if (v.topic.startsWith("queue")) {v.leave()}
+        });
+
     store.dispatch(switchRoom(payload["room"]));
   });
-  channel.join();
+
+  lobby.on("new_msg", (Map payload, String _ref, String _joinRef) {
+    store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
+  });
+
+  lobby.join();
+  store.dispatch(NewRoom(Room.lobby));
 }
 
 ThunkAction<AppState> pushMessage(String message) {
   return (Store<AppState> store) async {
-    channel.push(event: "post_msg", payload: {"body": message});
+    channels.forEach((k, v) => {
+          if (v.topic.startsWith("group"))
+            {
+              v.push(event: "post_msg", payload: {"body": message})
+            }
+        });
   };
 }
 
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
-    if (!roomName.startsWith("lobby") &&
-        store.state.room.map((v) => v != roomName).orElse(true)) {
-      channel = socket.channel(roomName);
+    PhoenixChannel channel = socket.channel(roomName);
+    Room room;
 
-      if (roomName.startsWith("queue:")) {
-        channel.on("new_room", (Map payload, String _ref, String _joinRef) {
-          store.dispatch(switchRoom(payload["room"]));
-        });
-      } else if (roomName.startsWith("group:")) {
-        channel.on("new_msg", (Map payload, String _ref, String _joinRef) {
-          store.dispatch(
-              NewMessage(Message(payload["body"], payload["sender"])));
-        });
-        channel.on("group_disbanded", (Map payload, String _ref, String _joinRef) {
-            print("disbanded");
-          store.dispatch(switchRoom("lobby:"+ store.state.user));
-        });
-      }
+    if (roomName.startsWith("group:")) {
+      channel.on("new_msg", (Map payload, String _ref, String _joinRef) {
+        store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
+      });
+      channel.on("group_disbanded",
+          (Map payload, String _ref, String _joinRef) {
+        channels[roomName].leave();
+        channels.remove(roomName);
 
-      channel.join();
-      store.dispatch(NewRoom(roomName));
+        store.dispatch(NewRoom(Room.lobby));
+      });
+      room = Room.group;
+    } else if (roomName.startsWith("queue")) {
+      room = Room.queue;
     }
+
+    channels[roomName] = channel;
+    channel.join();
+    store.dispatch(NewRoom(room));
   };
 }
