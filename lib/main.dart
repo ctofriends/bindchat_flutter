@@ -19,12 +19,14 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
 
   @override
   void call(Store<AppState> store, dynamic action, NextDispatcher next) {
-    if (action is NewRoom && action.room == Room.group) {
+    if (action is NewRoom && action.room is Group) {
       navigatorKey.currentState
           .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
     } else if (action is NewRoom) {
       navigatorKey.currentState.pushNamed('/tags');
     }
+
+    print(action);
     next(action);
   }
 }

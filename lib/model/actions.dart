@@ -31,6 +31,12 @@ class NewMessage {
   NewMessage(this.message);
 }
 
+class NewPresence {
+  final int count;
+
+  NewPresence(this.count);
+}
+
 void connect(Store<AppState> store) async {
   if (!socket.isConnected) {
     socket.onOpen(() => store.dispatch(connectionOpen));
@@ -38,9 +44,7 @@ void connect(Store<AppState> store) async {
     socket.onError((_) => store.dispatch(ConnectionError()));
 
     await socket.connect();
-  } else if (lobby == null) {
-    store.dispatch(NewRoom(Room.lobby));
-  }
+  } else if (lobby == null) {}
 }
 
 void connectionOpen(Store<AppState> store) async {
@@ -67,7 +71,7 @@ void joinLobby(Store<AppState> store) async {
   });
 
   lobby.join();
-  store.dispatch(NewRoom(Room.lobby));
+  store.dispatch(NewRoom(Lobby("lobby")));
 }
 
 ThunkAction<AppState> pushMessage(String message) {
@@ -95,11 +99,15 @@ ThunkAction<AppState> switchRoom(String roomName) {
         channels[roomName].leave();
         channels.remove(roomName);
 
-        store.dispatch(NewRoom(Room.lobby));
+        store.dispatch(NewRoom(Lobby("lobby")));
       });
-      room = Room.group;
+      room = Group(roomName);
     } else if (roomName.startsWith("queue")) {
-      room = Room.queue;
+      channel.on("presence_state", (Map payload, String _ref, String _joinRef) {
+        store.dispatch(NewPresence(payload.keys.length));
+      });
+
+      room = Queue(roomName, 0);
     }
 
     channels[roomName] = channel;

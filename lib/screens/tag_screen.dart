@@ -10,13 +10,14 @@ class TagScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('BindChat')),
-        body: StoreConnector<AppState, bool>(converter: (store) {
-          return store.state.room == Room.queue;
-        }, builder: (context, inQueue) {
+        body: StoreConnector<AppState, Room>(converter: (store) {
+          return store.state.room;
+        }, builder: (context, room) {
           return Container(
-              color: inQueue ? Colors.red : Colors.blue,
+              color: room is Queue ? Colors.red : Colors.blue,
               padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
               child: Column(children: <Widget>[
+                  Text(room is Queue ? (room as Queue).count.toString() : "0"),
                 Expanded(
                     child: GridView.count(crossAxisCount: 2, children: <Widget>[
                   ConstrainedBox(

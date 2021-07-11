@@ -5,7 +5,28 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'message.dart';
 
 enum Connection { off, connecting, on, error }
-enum Room { lobby, queue, group }
+
+class Room {
+  final String topic;
+
+  Room(this.topic);
+}
+
+class Lobby extends Room {
+  Lobby(topic) : super(topic);
+}
+
+class Queue extends Room {
+  int count = 0;
+
+  Queue(name, count) : super(name) {
+    this.count = count;
+  }
+}
+
+class Group extends Room {
+  Group(topic) : super(topic);
+}
 
 class AppState {
   final Connection connection;
