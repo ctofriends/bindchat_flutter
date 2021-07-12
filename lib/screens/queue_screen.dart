@@ -4,7 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import '../model/app_state.dart';
 import '../model/actions.dart';
 
-class TagScreen extends StatelessWidget {
+class QueueScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,9 +14,10 @@ class TagScreen extends StatelessWidget {
           return store.state.room;
         }, builder: (context, room) {
           return Container(
-              color: Colors.blue,
+              color: Colors.red,
               padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
               child: Column(children: <Widget>[
+                Text(room is Queue ? (room as Queue).count.toString() : "0"),
                 Expanded(
                     child: GridView.count(crossAxisCount: 2, children: <Widget>[
                   ConstrainedBox(
@@ -24,11 +25,11 @@ class TagScreen extends StatelessWidget {
                           BoxConstraints.tightFor(width: 200, height: 200),
                       child: StoreConnector<AppState, VoidCallback>(
                           converter: (store) {
-                        return () => store.dispatch(switchRoom("queue:games"));
+                        return () => store.dispatch(leaveQueue);
                       }, builder: (context, callback) {
                         return ElevatedButton(
                           child: Text(
-                            'Games',
+                            'Leave Queue',
                             style: TextStyle(fontSize: 24),
                           ),
                           onPressed: callback,

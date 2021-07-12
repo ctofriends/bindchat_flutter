@@ -23,6 +23,11 @@ class NewRoom {
   final Room room;
 
   NewRoom(this.room);
+
+  @override
+  String toString() {
+    return "NewRoom: " + room.topic;
+  }
 }
 
 class NewMessage {
@@ -53,35 +58,41 @@ void connectionOpen(Store<AppState> store) async {
 }
 
 void joinLobby(Store<AppState> store) async {
-  lobby = socket.channel("lobby:" + store.state.user);
+  if (lobby == null) {
+    lobby = socket.channel("lobby:" + store.state.user);
 
-  lobby.on("new_room", (Map payload, String _ref, String _joinRef) {
-    if (payload["room"].startsWith("lobby")) {
-      return;
-    }
-    channels.forEach((k, v) => {
-          if (v.topic.startsWith("queue")) {v.leave()}
-        });
+    lobby.on("new_room", (Map payload, String _ref, String _joinRef) {
+      if (payload["room"].startsWith("lobby")) {
+        return;
+      }
+      channels.forEach((k, v) => {
+            if (v.topic.startsWith("queue")) {v.leave()}
+          });
 
-    store.dispatch(switchRoom(payload["room"]));
-  });
+      store.dispatch(switchRoom(payload["room"]));
+    });
 
-  lobby.on("new_msg", (Map payload, String _ref, String _joinRef) {
-    store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
-  });
+    lobby.on("new_msg", (Map payload, String _ref, String _joinRef) {
+      store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
+    });
 
-  lobby.join();
+    lobby.join();
+  }
   store.dispatch(NewRoom(Lobby("lobby")));
+}
+
+void leaveQueue(Store<AppState> store) async {
+  channels[store.state.room.topic].push(event: "leave", payload: {});
+
+  channels[store.state.room.topic].leave();
+
+  store.dispatch(joinLobby);
 }
 
 ThunkAction<AppState> pushMessage(String message) {
   return (Store<AppState> store) async {
-    channels.forEach((k, v) => {
-          if (v.topic.startsWith("group"))
-            {
-              v.push(event: "post_msg", payload: {"body": message})
-            }
-        });
+    channels[store.state.room.topic]
+        .push(event: "post_msg", payload: {"body": message});
   };
 }
 

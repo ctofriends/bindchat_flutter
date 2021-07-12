@@ -1,6 +1,7 @@
 import 'package:bindchat/screens/home_screen.dart';
 import 'package:bindchat/screens/tag_screen.dart';
 import 'package:bindchat/screens/chat_screen.dart';
+import 'package:bindchat/screens/queue_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -19,11 +20,20 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
 
   @override
   void call(Store<AppState> store, dynamic action, NextDispatcher next) {
-    if (action is NewRoom && action.room is Group) {
+    if (action is NewRoom) {
+      String route;
+
+      if (action.room is Group) {
+        route = '/chat';
+      } else if (action.room is Queue) {
+        print('should be here');
+        route = '/queue';
+      } else {
+        route = '/tags';
+      }
+
       navigatorKey.currentState
-          .pushNamedAndRemoveUntil('/chat', ModalRoute.withName('/'));
-    } else if (action is NewRoom) {
-      navigatorKey.currentState.pushNamed('/tags');
+          .pushNamedAndRemoveUntil(route, ModalRoute.withName('/'));
     }
 
     print(action);
@@ -55,6 +65,7 @@ class MyApp extends StatelessWidget {
             '/': (context) => HomeScreen(),
             '/tags': (context) => TagScreen(),
             '/chat': (context) => ChatScreen(),
+            '/queue': (context) => QueueScreen(),
           },
         ));
   }

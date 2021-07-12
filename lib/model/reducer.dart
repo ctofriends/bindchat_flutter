@@ -30,7 +30,8 @@ AppState _onNewMessage(AppState state, NewMessage action) {
 
 AppState _onNewPresence(AppState state, NewPresence action) {
   if (state.room is Queue) {
-    return state.copyWith(room: Queue((state.room as Queue).topic, action.count));
+    return state.copyWith(
+        room: Queue((state.room as Queue).topic, action.count));
   } else {
     return state;
   }
