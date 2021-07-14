@@ -10,35 +10,48 @@ class TagScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.yellow,
         appBar: AppBar(title: Text('BindChat')),
-        body: StoreConnector<AppState, Room>(converter: (store) {
-          return store.state.room;
-        }, builder: (context, room) {
-          return Container(
-              color: Colors.blue,
-              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-              child: Column(children: <Widget>[
-                Expanded(
-                    child: GridView.count(crossAxisCount: 2, children: <Widget>[
-                  ConstrainedBox(
-                      constraints:
-                          BoxConstraints.tightFor(width: 200, height: 200),
-                      child: StoreConnector<AppState, VoidCallback>(
-                          converter: (store) {
-                        return () => store.dispatch(switchRoom("queue:games"));
-                      }, builder: (context, callback) {
-                        return ElevatedButton(
-                          child: Text(
-                            'Games',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          onPressed: callback,
-                          style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(),
-                          ),
-                        );
-                      }))
-                ]))
-              ]));
+        body: StoreConnector<AppState, VoidCallback>(converter: (store) {
+          return () => store.dispatch(leaveLobby);
+        }, builder: (context, callback) {
+          return WillPopScope(
+              onWillPop: () async {
+                callback();
+                return true;
+              },
+              child: StoreConnector<AppState, Room>(converter: (store) {
+                return store.state.room;
+              }, builder: (context, room) {
+                return Container(
+                    color: Colors.blue,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+                    child: Column(children: <Widget>[
+                      Expanded(
+                          child: GridView.count(
+                              crossAxisCount: 2,
+                              children: <Widget>[
+                            ConstrainedBox(
+                                constraints: BoxConstraints.tightFor(
+                                    width: 200, height: 200),
+                                child: StoreConnector<AppState, VoidCallback>(
+                                    converter: (store) {
+                                  return () =>
+                                      store.dispatch(switchRoom("queue:games"));
+                                }, builder: (context, callback) {
+                                  return ElevatedButton(
+                                    child: Text(
+                                      'Games',
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                    onPressed: callback,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                    ),
+                                  );
+                                }))
+                          ]))
+                    ]));
+              }));
         }));
   }
 }

@@ -16,6 +16,10 @@ class Lobby extends Room {
   Lobby(topic) : super(topic);
 }
 
+class None extends Room {
+  None() : super("none");
+}
+
 class Queue extends Room {
   int count = 0;
 

@@ -26,10 +26,11 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
       if (action.room is Group) {
         route = '/chat';
       } else if (action.room is Queue) {
-        print('should be here');
         route = '/queue';
-      } else {
+      } else if (action.room is Lobby) {
         route = '/tags';
+      } else {
+        route = '/';
       }
 
       navigatorKey.currentState

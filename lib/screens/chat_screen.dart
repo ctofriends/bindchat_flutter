@@ -23,29 +23,38 @@ class _ChatScreen extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.yellow,
-        appBar: AppBar(title: Text('Tibia')),
-        body: SafeArea(
-            child: Container(
-                color: Colors.blue,
-                child: StoreConnector<AppState, IList<Message>>(
-                    converter: (store) {
-                  return store.state.messages;
-                }, builder: (context, messages) {
-                  return Column(children: <Widget>[
-                    Expanded(
-                        child: ListView.builder(
-                      reverse: true,
-                      itemCount: messages.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return _buildMessage(messages[index]);
-                      },
-                    )),
-                    _buildSeparator(),
-                    _buildMessageComposer()
-                  ]);
-                }))));
+    return StoreConnector<AppState, VoidCallback>(converter: (store) {
+      return () => store.dispatch(leaveLobby);
+    }, builder: (context, callback) {
+      return WillPopScope(
+          onWillPop: () async {
+            callback();
+            return true;
+          },
+          child: Scaffold(
+              backgroundColor: Colors.yellow,
+              appBar: AppBar(title: Text('Tibia')),
+              body: SafeArea(
+                  child: Container(
+                      color: Colors.blue,
+                      child: StoreConnector<AppState, IList<Message>>(
+                          converter: (store) {
+                        return store.state.messages;
+                      }, builder: (context, messages) {
+                        return Column(children: <Widget>[
+                          Expanded(
+                              child: ListView.builder(
+                            reverse: true,
+                            itemCount: messages.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildMessage(messages[index]);
+                            },
+                          )),
+                          _buildSeparator(),
+                          _buildMessageComposer()
+                        ]);
+                      })))));
+    });
   }
 
   _buildMessage(Message chatMessage) {

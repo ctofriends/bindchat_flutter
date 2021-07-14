@@ -48,13 +48,21 @@ void connect(Store<AppState> store) async {
     socket.onClose((_) => store.dispatch(ConnectionError()));
     socket.onError((_) => store.dispatch(ConnectionError()));
 
-    await socket.connect();
-  } else if (lobby == null) {}
+    socket.connect();
+  }
 }
 
 void connectionOpen(Store<AppState> store) async {
   store.dispatch(ConnectionOpen());
-  store.dispatch(joinLobby);
+}
+
+void leaveLobby(Store<AppState> store) async {
+  lobby.leave();
+  lobby = null;
+  channels.forEach((k, v) => v.leave);
+  channels = {};
+  store.dispatch(NewRoom(None()));
+  store.dispatch(ConnectionOpen());
 }
 
 void joinLobby(Store<AppState> store) async {
