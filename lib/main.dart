@@ -23,18 +23,17 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
     if (action is NewRoom) {
       String route;
 
-      if (action.room is Group) {
+      if (action.room.startsWith('group')) {
         route = '/chat';
-      } else if (action.room is Queue) {
+      } else if (action.room.startsWith('queue')) {
         route = '/queue';
-      } else if (action.room is Lobby) {
+      } else if (action.room.startsWith('lobby')) {
         route = '/tags';
       } else {
         route = '/';
       }
 
-      navigatorKey.currentState
-          .pushNamedAndRemoveUntil(route, ModalRoute.withName('/'));
+      print(navigatorKey.currentState?.pushNamedAndRemoveUntil(route, ModalRoute.withName('/')));
     }
 
     print(action);

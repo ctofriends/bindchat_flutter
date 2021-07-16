@@ -1,5 +1,5 @@
 import 'package:redux/redux.dart';
-import 'package:optional/optional.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'app_state.dart';
 import 'actions.dart';
@@ -21,7 +21,7 @@ AppState _onSocketConnectionOpening(AppState state, ConnectionOpening action) {
 }
 
 AppState _onNewRoom(AppState state, NewRoom action) {
-  return state.copyWith(room: action.room);
+  return state;
 }
 
 AppState _onNewMessage(AppState state, NewMessage action) {
@@ -29,10 +29,14 @@ AppState _onNewMessage(AppState state, NewMessage action) {
 }
 
 AppState _onNewPresence(AppState state, NewPresence action) {
-  if (state.room is Queue) {
-    return state.copyWith(
-        room: Queue((state.room as Queue).topic, action.count));
+  ISet<Room> newRooms;
+  if (state.rooms.any((r) => r.topic == action.topic)) {
+    newRooms = state.rooms
+        .removeWhere((r) => r.topic == action.topic)
+        .add(Room(action.topic, action.presence));
   } else {
-    return state;
+    newRooms = state.rooms.add(Room(action.topic, action.presence));
   }
+
+  return state.copyWith(rooms: newRooms);
 }

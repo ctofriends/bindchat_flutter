@@ -10,7 +10,7 @@ final PhoenixSocket socket = new PhoenixSocket(
     "ws://localhost:4000/socket/websocket",
     socketOptions: PhoenixSocketOptions(params: {"token": "alan"}));
 
-PhoenixChannel lobby;
+PhoenixChannel? lobby;
 Map<String, PhoenixChannel> channels = {};
 
 class ConnectionOpen {}
@@ -20,13 +20,13 @@ class ConnectionOpening {}
 class ConnectionError {}
 
 class NewRoom {
-  final Room room;
+  final String room;
 
   NewRoom(this.room);
 
   @override
   String toString() {
-    return "NewRoom: " + room.topic;
+    return "NewRoom: " + room;
   }
 }
 
@@ -37,9 +37,10 @@ class NewMessage {
 }
 
 class NewPresence {
-  final int count;
+  int presence;
+  final String topic;
 
-  NewPresence(this.count);
+  NewPresence(this.topic, this.presence);
 }
 
 void connect(Store<AppState> store) async {
@@ -57,11 +58,11 @@ void connectionOpen(Store<AppState> store) async {
 }
 
 void leaveLobby(Store<AppState> store) async {
-  lobby.leave();
+  lobby?.leave();
   lobby = null;
   channels.forEach((k, v) => v.leave);
   channels = {};
-  store.dispatch(NewRoom(None()));
+  store.dispatch(NewRoom("lobby"));
   store.dispatch(ConnectionOpen());
 }
 
@@ -69,68 +70,70 @@ void joinLobby(Store<AppState> store) async {
   if (lobby == null) {
     lobby = socket.channel("lobby:" + store.state.user);
 
-    lobby.on("new_room", (Map payload, String _ref, String _joinRef) {
-      if (payload["room"].startsWith("lobby")) {
+    lobby?.on("new_room", (Map? payload, String? _ref, String? _joinRef) {
+      if (payload?["room"].startsWith("lobby")) {
         return;
       }
       channels.forEach((k, v) => {
-            if (v.topic.startsWith("queue")) {v.leave()}
+            if (v.topic!.startsWith("queue")) {v.leave()}
           });
 
-      store.dispatch(switchRoom(payload["room"]));
+      store.dispatch(switchRoom(payload?["room"]));
     });
 
-    lobby.on("new_msg", (Map payload, String _ref, String _joinRef) {
-      store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
+    lobby?.on("new_msg", (Map? payload, String? _ref, String? _joinRef) {
+      store.dispatch(NewMessage(Message(payload?["body"], payload?["sender"])));
     });
 
-    lobby.join();
+    lobby?.join();
   }
-  store.dispatch(NewRoom(Lobby("lobby")));
+  store.dispatch(NewRoom("lobby"));
 }
 
 void leaveQueue(Store<AppState> store) async {
-  channels[store.state.room.topic].push(event: "leave", payload: {});
+  channels[store.state.queue?.topic]?.push(event: "leave", payload: {});
 
-  channels[store.state.room.topic].leave();
+  channels[store.state.queue?.topic]?.leave();
 
   store.dispatch(joinLobby);
 }
 
 ThunkAction<AppState> pushMessage(String message) {
   return (Store<AppState> store) async {
-    channels[store.state.room.topic]
-        .push(event: "post_msg", payload: {"body": message});
+    channels[store.state.group]
+        ?.push(event: "post_msg", payload: {"body": message});
   };
 }
 
 ThunkAction<AppState> switchRoom(String roomName) {
   return (Store<AppState> store) async {
     PhoenixChannel channel = socket.channel(roomName);
-    Room room;
 
     if (roomName.startsWith("group:")) {
-      channel.on("new_msg", (Map payload, String _ref, String _joinRef) {
-        store.dispatch(NewMessage(Message(payload["body"], payload["sender"])));
+      channel.on("new_msg", (Map? payload, String? _ref, String? _joinRef) {
+        store
+            .dispatch(NewMessage(Message(payload?["body"], payload?["sender"])));
       });
       channel.on("group_disbanded",
-          (Map payload, String _ref, String _joinRef) {
-        channels[roomName].leave();
+          (Map? payload, String? _ref, String? _joinRef) {
+        channels[roomName]?.leave();
         channels.remove(roomName);
 
-        store.dispatch(NewRoom(Lobby("lobby")));
+        store.dispatch(NewRoom("lobby"));
       });
-      room = Group(roomName);
     } else if (roomName.startsWith("queue")) {
-      channel.on("presence_state", (Map payload, String _ref, String _joinRef) {
-        store.dispatch(NewPresence(payload.keys.length));
+      channel.on("lobby_presence_state",
+          (Map? payload, String? _ref, String? _joinRef) {
+        store.dispatch(NewPresence(roomName, payload!.keys.length));
       });
-
-      room = Queue(roomName, 0);
+      channel.on("queue_presence_state",
+          (Map? payload, String? _ref, String? _joinRef) {
+        store.dispatch(NewPresence(roomName, payload!.keys.length));
+      });
     }
 
     channels[roomName] = channel;
     channel.join();
-    store.dispatch(NewRoom(room));
+    store.dispatch(NewRoom(roomName));
   };
 }

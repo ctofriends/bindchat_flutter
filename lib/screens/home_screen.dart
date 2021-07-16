@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'BindChat',
       style: TextStyle(
           color: Colors.white, fontSize: 30.0, fontWeight: FontWeight.bold),
-    );
+      );
   }
 
   Widget _input() {

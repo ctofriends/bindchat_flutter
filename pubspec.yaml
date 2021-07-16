@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,7 +28,6 @@ dependencies:
   redux: ^5.0.0
   flutter_redux: ^0.8.2
   redux_thunk: ^0.4.0
-  optional: ^5.0.0+1
   fast_immutable_collections: ^5.0.1
 
   # The following adds the Cupertino Icons font to your application.

@@ -18,17 +18,15 @@ class QueueScreen extends StatelessWidget {
           child: Scaffold(
               backgroundColor: Colors.yellow,
               appBar: AppBar(title: Text('BindChat')),
-              body: StoreConnector<AppState, Room>(converter: (store) {
-                return store.state.room;
+              body: StoreConnector<AppState, Room?>(converter: (store) {
+                return store.state.queue;
               }, builder: (context, room) {
                 return Container(
                     color: Colors.red,
                     padding:
                         EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
                     child: Column(children: <Widget>[
-                      Text(room is Queue
-                          ? (room as Queue).count.toString()
-                          : "0"),
+                      Text(room?.presence.toString() ?? "no presence"),
                       Expanded(
                           child: GridView.count(
                               crossAxisCount: 2,
