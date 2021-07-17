@@ -7,7 +7,6 @@ import 'actions.dart';
 final reducer = combineReducers<AppState>([
   TypedReducer<AppState, ConnectionOpen>(_onSocketConnection),
   TypedReducer<AppState, ConnectionOpening>(_onSocketConnectionOpening),
-  TypedReducer<AppState, NewRoom>(_onNewRoom),
   TypedReducer<AppState, NewMessage>(_onNewMessage),
   TypedReducer<AppState, NewPresence>(_onNewPresence),
 ]);
@@ -18,10 +17,6 @@ AppState _onSocketConnection(AppState state, ConnectionOpen action) {
 
 AppState _onSocketConnectionOpening(AppState state, ConnectionOpening action) {
   return state.copyWith(connection: Connection.connecting);
-}
-
-AppState _onNewRoom(AppState state, NewRoom action) {
-  return state;
 }
 
 AppState _onNewMessage(AppState state, NewMessage action) {
@@ -37,6 +32,6 @@ AppState _onNewPresence(AppState state, NewPresence action) {
   } else {
     newRooms = state.rooms.add(Room(action.topic, action.presence));
   }
-
+  
   return state.copyWith(rooms: newRooms);
 }

@@ -11,6 +11,7 @@ final PhoenixSocket socket = new PhoenixSocket(
     socketOptions: PhoenixSocketOptions(params: {"token": "alan"}));
 
 PhoenixChannel? lobby;
+PhoenixChannel? global;
 Map<String, PhoenixChannel> channels = {};
 
 class ConnectionOpen {}
@@ -62,13 +63,14 @@ void leaveLobby(Store<AppState> store) async {
   lobby = null;
   channels.forEach((k, v) => v.leave);
   channels = {};
-  store.dispatch(NewRoom("lobby"));
   store.dispatch(ConnectionOpen());
 }
 
 void joinLobby(Store<AppState> store) async {
   if (lobby == null) {
-    lobby = socket.channel("lobby:" + store.state.user);
+    String topic = "lobby:" + store.state.user;
+    lobby = socket.channel(topic);
+    global = socket.channel("lobby");
 
     lobby?.on("new_room", (Map? payload, String? _ref, String? _joinRef) {
       if (payload?["room"].startsWith("lobby")) {
@@ -81,11 +83,17 @@ void joinLobby(Store<AppState> store) async {
       store.dispatch(switchRoom(payload?["room"]));
     });
 
+    global?.on("lobby_presence_state", (Map? payload, String? _ref, String? _joinRef) {
+        print(payload);
+      store.dispatch(NewPresence(topic, payload!.keys.length));
+    });
+
     lobby?.on("new_msg", (Map? payload, String? _ref, String? _joinRef) {
       store.dispatch(NewMessage(Message(payload?["body"], payload?["sender"])));
     });
 
     lobby?.join();
+    global?.join();
   }
   store.dispatch(NewRoom("lobby"));
 }
@@ -122,10 +130,6 @@ ThunkAction<AppState> switchRoom(String roomName) {
         store.dispatch(NewRoom("lobby"));
       });
     } else if (roomName.startsWith("queue")) {
-      channel.on("lobby_presence_state",
-          (Map? payload, String? _ref, String? _joinRef) {
-        store.dispatch(NewPresence(roomName, payload!.keys.length));
-      });
       channel.on("queue_presence_state",
           (Map? payload, String? _ref, String? _joinRef) {
         store.dispatch(NewPresence(roomName, payload!.keys.length));

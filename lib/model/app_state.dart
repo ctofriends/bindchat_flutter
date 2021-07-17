@@ -10,6 +10,11 @@ class Room {
   final String topic;
 
   Room(this.topic, this.presence);
+
+  @override
+  String toString() {
+    return topic + presence.toString();
+  }
 }
 
 class AppState {
@@ -43,19 +48,18 @@ class AppState {
         return r;
       }
     }
-    ;
     return null;
   }
 
   Room? get queue {
-    _firstOrNull("queue");
+    return _firstOrNull("queue");
   }
 
   Room? get lobby {
-    _firstOrNull("lobby");
+    return _firstOrNull("lobby");
   }
 
   Room? get group {
-    _firstOrNull("group");
+    return _firstOrNull("group");
   }
 }

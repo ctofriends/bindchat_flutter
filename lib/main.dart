@@ -33,10 +33,9 @@ class NavigationMiddleware extends MiddlewareClass<AppState> {
         route = '/';
       }
 
-      print(navigatorKey.currentState?.pushNamedAndRemoveUntil(route, ModalRoute.withName('/')));
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(route, ModalRoute.withName('/'));
     }
 
-    print(action);
     next(action);
   }
 }

@@ -18,9 +18,9 @@ class TagScreen extends StatelessWidget {
                 callback();
                 return true;
               },
-              child: StoreConnector<AppState, String>(converter: (store) {
-                  return store.state.lobby?.presence.toString() ?? "no presence";
-              }, builder: (context, presence) {
+              child: StoreConnector<AppState, Room?>(converter: (store) {
+                  return store.state.lobby;
+              }, builder: (context, lobby) {
                 return Container(
                     color: Colors.blue,
                     padding:
@@ -30,7 +30,7 @@ class TagScreen extends StatelessWidget {
                           child: GridView.count(
                               crossAxisCount: 2,
                               children: <Widget>[
-                            Text(presence),
+                                Text(lobby?.presence.toString() ?? "nopresence"),
                             ConstrainedBox(
                                 constraints: BoxConstraints.tightFor(
                                     width: 200, height: 200),
